@@ -18,3 +18,13 @@ header {
 h1 {
   font-size: 3rem;
 }
+
+main {
+  display: flex;
+  align-items: flex-end;
+}
+
+.resultcanvas, video {
+  width: 50vw;
+  height: 50vh;
+}
