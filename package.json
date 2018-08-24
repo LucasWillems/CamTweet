@@ -27,6 +27,8 @@
     "local-web-server": "^1.2.6",
     "lodash": "^4.17.4",
     "ml5": "^0.1.1",
+    "p2": "^0.7.1",
+    "pixi.js": "^4.8.1",
     "postcss-cssnext": "^2.9.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^1.2.1",
