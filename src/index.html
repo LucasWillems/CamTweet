@@ -11,20 +11,32 @@
 <body>
 
   <header>
-    <h1>Spoticam</h1>
+    <h1>Camessager</h1>
   </header>
 
   <main>
       <section class="cam">
-        <div>
-          <p class="result">...</p>
-          <a href="#" class="addword">Woord toevoegen</a>
-        </div>
-        <video id="video" width="480" height="480" autoplay></video>
-      </section>
+        <article class="videoArticle">
+          <div>
+            <p class="result">...</p>
+            <a href="#" class="addword">Woord toevoegen</a>
+          </div>
+          <video id="video" class="video" width="480" height="480" autoplay></video>
+        </article>
+
       <div class="resultcanvas">
 
       </div>
+    </section>
+
+    <section class="messageform">
+      <form class="messagemaker" action="index.html" method="post">
+        <label for="message">Zoekveld</label>
+        <textarea name="name" class="messagefield" rows="8" cols="80"></textarea>
+        <button type="button" name="backspace" class="backspace">Backspace</button>
+        <input type="submit" value="Verstuur">
+      </form>
+    </section>
   </main>
 
 </body>

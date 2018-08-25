@@ -1,20 +1,33 @@
 const ml5 = require(`ml5`);
 const PIXI = require(`pixi.js`);
 const p2 = require(`p2`);
+// const querystring = require(`querystring`);
+//
+// const express = require(`express`);
+// const request = require(`ajax-request`);
+// console.log(request);
 
+// const appl = express();
+
+//video
 const video = document.getElementById(`video`);
 const result = document.querySelector(`.result`);
+
+//WEBGL
 const resultcanvas = document.querySelector(`.resultcanvas`);
 
-
-// import vertexSource from './lib/vertex-source.js';
-// import fragmentSource from './lib/fragment-source.js';
+//FORM
+const form = document.querySelector(`.messagemaker`);
+const messageField = document.querySelector(`.messagefield`);
+const backspace = document.querySelector(`.backspace`);
+const words = [];
 
 const app = new PIXI.Application({
-  width: window.innerWidth / 2, height: 500});
+  width: 480, height: 480});
 
 
 let world, boxShape, boxBody, planeShape, planeBody, rect, currentWord;
+
 
 const allWords = [];
 
@@ -48,7 +61,7 @@ const addWord = () => {
   } else {
     if (allWords.indexOf(currentWord) === - 1) {
       allWords.push(currentWord);
-      console.log(allWords);
+      console.log(`word added`);
       addBox();
       addGraphics(currentWord);
     } else {
@@ -61,7 +74,7 @@ const startp2 = () => {
   world = new p2.World();
 
   planeShape = new p2.Plane();
-  planeBody = new p2.Body({position: [ 0, - 250],
+  planeBody = new p2.Body({position: [ 0, - 230],
     color: 0xFFFFFF});
 
   const wallShapeLeft = new p2.Plane();
@@ -112,7 +125,6 @@ const startPixi = () => {
 
   resultcanvas.appendChild(app.view);
 
-  console.log(resultcanvas);
 
   app.renderer.backgroundColor = 0x488968;
 
@@ -122,11 +134,9 @@ const startPixi = () => {
   // app.stage.scale.x =  zoom;
   app.stage.scale.y =  - 1;
 
-  console.log(app.renderer.width);
 };
 
 const addGraphics = () => {
-  console.log(currentWord);
   rect = new PIXI.Graphics();
   rect.beginFill(0x107757);
   rect.drawRect(- boxShape.width / 2, - boxShape.height / 2, boxShape.width, boxShape.height);
@@ -156,10 +166,6 @@ const addGraphics = () => {
 
 };
 
-const onBtnClick = e => {
-  console.log(e.target.customProperty);
-};
-
 const animate = () => {
   requestAnimationFrame(animate);
   if (allWords.length !== 0) {
@@ -174,11 +180,45 @@ const animate = () => {
   }
 };
 
+
+const onBtnClick = e => {
+
+  words.push(e.target.customProperty);
+
+  messageField.value = words.join(` `);
+
+  console.log(`searchfield Succes`);
+};
+
+const deleteLastWord = () => {
+  words.splice(- 1, 1);
+  messageField.value = words.join(` `);
+  console.log(`deleted`);
+
+};
+
+
+const searchSong = (e, v) => {
+  e.preventDefault();
+  console.log(v);
+};
+
+
+
 const init = () => {
   recogniseMe();
 
   startp2();
   animate();
+  // getScope();
+
+
+  //FORM
+  backspace.addEventListener(`click`, deleteLastWord);
+
+  form.addEventListener(`submit`, (e => {
+    searchSong(e, messageField.value);
+  }));
 
 };
 
