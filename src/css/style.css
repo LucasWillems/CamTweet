@@ -17,4 +17,5 @@ h1 {
 .cam {
   display: flex;
   justify-content: space-around;
+  background: #488968;
 }

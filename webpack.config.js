@@ -10,6 +10,8 @@ const configHtmls = require(`webpack-config-htmls`)();
 
 const {getIfUtils, removeEmpty} = require(`webpack-config-utils`);
 const {ifProduction, ifDevelopment} = getIfUtils(process.env.NODE_ENV);
+const fs = require(`fs`);
+
 
 const extractCSS = new ExtractTextWebpackPlugin(`css/style.css`);
 
@@ -27,13 +29,31 @@ const copy = new CopyWebpackPlugin([{
   ]
 });
 
-const config = {
-
+const frontend = {
   entry: removeEmpty([
     `./src/css/style.css`,
     `./src/js/script.js`,
     ifDevelopment(...configHtmls.entry)
   ]),
+
+  output: {
+    path: path.join(__dirname, `dist`),
+    filename: `js/[name].[hash].js`,
+    publicPath
+  }
+};
+
+const nodeModules = {};
+fs.readdirSync(`node_modules`)
+  .filter(function(x) {
+    return [`.bin`].indexOf(x) === - 1;
+  })
+  .forEach(function(mod) {
+    nodeModules[mod] = `commonjs ${  mod}`;
+  });
+
+
+const config = {
 
   resolve: {
     extensions: [
@@ -41,12 +61,6 @@ const config = {
       `.jsx`,
       `.css`
     ]
-  },
-
-  output: {
-    path: path.join(__dirname, `dist`),
-    filename: `js/[name].[hash].js`,
-    publicPath
   },
 
   devtool: `source-map`,
@@ -60,12 +74,6 @@ const config = {
     overlay: {
       errors: true,
       warnings: true
-    },
-
-    headers: {
-      "Access-Control-Allow-Origin": `*`,
-      "Access-Control-Allow-Methods": `GET, POST, PUT, DELETE, PATCH, OPTIONS`,
-      "Access-Control-Allow-Headers": `X-Requested-With, content-type, Authorization`
     },
 
     port
@@ -190,4 +198,6 @@ const config = {
 
 };
 
-module.exports = config;
+module.exports = [
+  Object.assign({}, config, frontend)
+];

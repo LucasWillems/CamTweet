@@ -1,7 +1,6 @@
 const ml5 = require(`ml5`);
 const PIXI = require(`pixi.js`);
 const p2 = require(`p2`);
-const $ = require(`jquery`);
 // const querystring = require(`querystring`);
 //
 // const express = require(`express`);
@@ -18,19 +17,10 @@ const result = document.querySelector(`.result`);
 const resultcanvas = document.querySelector(`.resultcanvas`);
 
 //FORM
-const form = document.querySelector(`.spotifyForm`);
-const searchfield = document.querySelector(`.searchfield`);
-
-//SPOTIFY
-// const stateKey = `spotify_auth_state`;
-const clientId = `3ec5dcfd1a6f418086c7ecba1e4b00f9`; // Your client id
-const clientSecret = `fb742021dbb24377851ed3612717ea12`; // Your secret
-// const redirectUri = `http://localhost:8888/callback`; // Your redirect uri
-
-
-
-// import vertexSource from './lib/vertex-source.js';
-// import fragmentSource from './lib/fragment-source.js';
+const form = document.querySelector(`.messagemaker`);
+const messageField = document.querySelector(`.messagefield`);
+const backspace = document.querySelector(`.backspace`);
+const words = [];
 
 const app = new PIXI.Application({
   width: 480, height: 480});
@@ -176,11 +166,6 @@ const addGraphics = () => {
 
 };
 
-const onBtnClick = e => {
-  searchfield.value = e.target.customProperty;
-  console.log(`searchfield Succes`);
-};
-
 const animate = () => {
   requestAnimationFrame(animate);
   if (allWords.length !== 0) {
@@ -196,42 +181,29 @@ const animate = () => {
 };
 
 
-const requestSpotify = () => {
-  $.ajax({
-    type: `POST`,
-    url: `https://accounts.spotify.com/api/token`,
-    /*eslint-disable */
-    grant_type: `client_credentials`,
-    /*eslint-enable */
+const onBtnClick = e => {
 
-    headers: {
-      Authorization: `Basic ${  new Buffer(`${clientId}:${clientSecret}`).toString(`base64`)}`
-    },
+  words.push(e.target.customProperty);
 
+  messageField.value = words.join(` `);
 
-  });
+  console.log(`searchfield Succes`);
 };
-//
+
+const deleteLastWord = () => {
+  words.splice(- 1, 1);
+  messageField.value = words.join(` `);
+  console.log(`deleted`);
+
+};
 
 
 const searchSong = (e, v) => {
   e.preventDefault();
   console.log(v);
-
-  $.ajax({
-    url: `https://api.spotify.com/v1/search`,
-    data: {
-      q: v,
-      type: `album`
-    },
-    success: response
-  });
 };
 
 
-const response = r => {
-  console.log(r);
-};
 
 const init = () => {
   recogniseMe();
@@ -239,10 +211,13 @@ const init = () => {
   startp2();
   animate();
   // getScope();
-  requestSpotify();
+
+
+  //FORM
+  backspace.addEventListener(`click`, deleteLastWord);
 
   form.addEventListener(`submit`, (e => {
-    searchSong(e, searchfield.value);
+    searchSong(e, messageField.value);
   }));
 
 };
