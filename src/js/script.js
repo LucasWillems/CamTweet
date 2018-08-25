@@ -1,20 +1,43 @@
 const ml5 = require(`ml5`);
 const PIXI = require(`pixi.js`);
 const p2 = require(`p2`);
+const $ = require(`jquery`);
+// const querystring = require(`querystring`);
+//
+// const express = require(`express`);
+// const request = require(`ajax-request`);
+// console.log(request);
 
+// const appl = express();
+
+//video
 const video = document.getElementById(`video`);
 const result = document.querySelector(`.result`);
+
+//WEBGL
 const resultcanvas = document.querySelector(`.resultcanvas`);
+
+//FORM
+const form = document.querySelector(`.spotifyForm`);
+const searchfield = document.querySelector(`.searchfield`);
+
+//SPOTIFY
+// const stateKey = `spotify_auth_state`;
+const clientId = `3ec5dcfd1a6f418086c7ecba1e4b00f9`; // Your client id
+const clientSecret = `fb742021dbb24377851ed3612717ea12`; // Your secret
+// const redirectUri = `http://localhost:8888/callback`; // Your redirect uri
+
 
 
 // import vertexSource from './lib/vertex-source.js';
 // import fragmentSource from './lib/fragment-source.js';
 
 const app = new PIXI.Application({
-  width: window.innerWidth / 2, height: 500});
+  width: 480, height: 480});
 
 
 let world, boxShape, boxBody, planeShape, planeBody, rect, currentWord;
+
 
 const allWords = [];
 
@@ -48,7 +71,7 @@ const addWord = () => {
   } else {
     if (allWords.indexOf(currentWord) === - 1) {
       allWords.push(currentWord);
-      console.log(allWords);
+      console.log(`word added`);
       addBox();
       addGraphics(currentWord);
     } else {
@@ -61,7 +84,7 @@ const startp2 = () => {
   world = new p2.World();
 
   planeShape = new p2.Plane();
-  planeBody = new p2.Body({position: [ 0, - 250],
+  planeBody = new p2.Body({position: [ 0, - 230],
     color: 0xFFFFFF});
 
   const wallShapeLeft = new p2.Plane();
@@ -112,7 +135,6 @@ const startPixi = () => {
 
   resultcanvas.appendChild(app.view);
 
-  console.log(resultcanvas);
 
   app.renderer.backgroundColor = 0x488968;
 
@@ -122,11 +144,9 @@ const startPixi = () => {
   // app.stage.scale.x =  zoom;
   app.stage.scale.y =  - 1;
 
-  console.log(app.renderer.width);
 };
 
 const addGraphics = () => {
-  console.log(currentWord);
   rect = new PIXI.Graphics();
   rect.beginFill(0x107757);
   rect.drawRect(- boxShape.width / 2, - boxShape.height / 2, boxShape.width, boxShape.height);
@@ -157,7 +177,8 @@ const addGraphics = () => {
 };
 
 const onBtnClick = e => {
-  console.log(e.target.customProperty);
+  searchfield.value = e.target.customProperty;
+  console.log(`searchfield Succes`);
 };
 
 const animate = () => {
@@ -174,11 +195,55 @@ const animate = () => {
   }
 };
 
+
+const requestSpotify = () => {
+  $.ajax({
+    type: `POST`,
+    url: `https://accounts.spotify.com/api/token`,
+    /*eslint-disable */
+    grant_type: `client_credentials`,
+    /*eslint-enable */
+
+    headers: {
+      Authorization: `Basic ${  new Buffer(`${clientId}:${clientSecret}`).toString(`base64`)}`
+    },
+
+
+  });
+};
+//
+
+
+const searchSong = (e, v) => {
+  e.preventDefault();
+  console.log(v);
+
+  $.ajax({
+    url: `https://api.spotify.com/v1/search`,
+    data: {
+      q: v,
+      type: `album`
+    },
+    success: response
+  });
+};
+
+
+const response = r => {
+  console.log(r);
+};
+
 const init = () => {
   recogniseMe();
 
   startp2();
   animate();
+  // getScope();
+  requestSpotify();
+
+  form.addEventListener(`submit`, (e => {
+    searchSong(e, searchfield.value);
+  }));
 
 };
 

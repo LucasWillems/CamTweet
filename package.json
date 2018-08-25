@@ -8,6 +8,7 @@
     "production": "npm run clean && NODE_ENV=production webpack -p"
   },
   "devDependencies": {
+    "ajax": "^0.0.4",
     "babel-core": "^6.21.0",
     "babel-loader": "^7.0.0",
     "babel-plugin-lodash": "^3.2.11",
@@ -20,10 +21,14 @@
     "eslint": "^3.17.0",
     "eslint-config-devine": "^1.7.0",
     "eslint-loader": "^1.6.1",
+    "express": "^4.16.3",
     "extract-text-webpack-plugin": "^2.0.0",
     "file-loader": "^0.11.1",
     "html-loader": "^0.4.4",
     "image-webpack-loader": "^3.1.0",
+    "jQuery": "^1.7.4",
+    "jquery": "^3.3.1",
+    "json-loader": "^0.5.7",
     "local-web-server": "^1.2.6",
     "lodash": "^4.17.4",
     "ml5": "^0.1.1",
@@ -34,6 +39,8 @@
     "postcss-loader": "^1.2.1",
     "postcss-reporter": "^3.0.0",
     "postcss-will-change": "^1.1.0",
+    "querystring": "^0.2.0",
+    "request": "^2.88.0",
     "rimraf": "^2.5.4",
     "style-loader": "^0.17.0",
     "stylelint": "^7.8.0",
@@ -45,6 +52,7 @@
     "webpack-dev-server": "^2.4.1"
   },
   "dependencies": {
+    "ajax-request": "^1.2.3",
     "bindings": "^1.3.0"
   }
 }
