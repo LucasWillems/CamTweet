@@ -3,7 +3,7 @@
 <head>
 
   <meta charset="UTF-8">
-  <title>Spoticam</title>
+  <title>CamTweet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 </head>
@@ -11,19 +11,50 @@
 <body>
 
   <header>
-    <h1>Spoticam</h1>
+    <h1 class="head-title">CamTweet</h1>
   </header>
 
   <main>
-    <body>
-      <p>
-        The MobileNet model labeled this as <span class="result">...</span>
-        <br/>with a confidence of <span class="probability">...</span>.
-      </p>
-      <video id="video" width="640" height="480" autoplay></video>
-    </body>
-  </main>
+      <section class="cam">
+        <article class="videoArticle">
+          <div class="camResults">
+            <div class="null"></div>
+            <p class="result">...</p>
+            <a href="#" class="addword">Add Word</a>
+          </div>
+          <video id="video" class="video" width="533" height="400" autoplay></video>
+        </article>
 
+      <div class="resultcanvas">
+
+      </div>
+    </section>
+
+    <section class="messagemaker">
+      <form class="messageform" action="index.html" method="post">
+        <div class="formcol1">
+          <h1 for="message" class="messageLabel">Message Maker</h1>
+          <textarea name="name" class="messagefield" disabled></textarea>
+        </div>
+        <div class="formcol2">
+          <span class="genTxtLength">Wordlength: 50</span><input class="lenSlider" type="range" min="1" max="100" value="50">
+          <span class="genTxtTemperature">Temperature: 0.5</span><input class="tempSlider" type="range" min="0" max="1" step="0.01">
+
+          <div class="buttons">
+            <button type="button" name="backspace" class="backspace">Backspace</button>
+            <input type="submit" value="Generate" class="sendbtn">
+          </div>
+        </div>
+      </form>
+      <article class="generatedTextArticle">
+        <h1 class="jouwBericht">Your Message</h1>
+        <p class="generatedText"></p>
+        <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Hello%20world" data-size: large>
+          Tweet
+        </a>
+      </article>
+    </section>
+  </main>
 
 </body>
 

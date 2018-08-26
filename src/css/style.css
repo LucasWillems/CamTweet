@@ -8,13 +8,170 @@ html {
 body {
   font-family: 'Helvetica neue', Helvetica, Arial, sans-serif;
   font-size: 1.6rem;
-  margin: 2rem;
+  height: 100vh;
+  background: #237a56;
 }
 
-header {
-  margin: 2rem 0;
-}
-
-h1 {
+.head-title {
   font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 1rem;
+  color: white;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+}
+
+.cam {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 2rem 0;
+  background-color: #237a56;
+}
+
+.camResults {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.null {
+  width: 11rem;
+}
+
+.result {
+  color: white;
+  margin-right: 1rem;
+}
+
+.addword {
+  background-color: white;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: #237a56;
+  border-radius: 10rem;
+  margin-left: 1rem;
+  border: solid .2rem white;
+  width: 11rem;
+}
+
+.addword:hover {
+  background-color: #237a56;
+  color: white;
+}
+
+.messagemaker {
+  background-color: #237a56;
+  display: flex;
+  justify-content: center;
+  height: 20rem;
+}
+
+.messageform {
+  display: flex;
+  justify-content: space-around;
+  width: 53.3rem;
+}
+
+.formcol1, .formcol2 {
+  width: 50%;
+}
+
+.formcol1 {
+  padding-right: 1rem;
+}
+
+.formcol2 {
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageLabel, .jouwBericht {
+  color: white;
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.messagefield {
+  width: 100%;
+  height: 12rem;
+  resize: none;
+  border: none;
+  padding: 1rem;
+  border-radius: 2rem;
+  font-size: 1.2rem;
+}
+
+.genTxtLength, .genTxtTemperature {
+  color: white;
+  margin-bottom: .5rem;
+  font-weight: bold;
+}
+
+.lenSlider, .tempSlider {
+  margin-bottom: 1rem;
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-self: flex-end;
+}
+
+.backspace, .sendbtn, .twitter-share-button {
+  font-size: 1.5rem;
+  padding: .8rem;
+  border-radius: 2rem;
+  width: 10rem;
+}
+
+.backspace {
+  border: solid .2rem #214f36;
+  background: #237a56;
+  color: #214f36;
+}
+
+.backspace:hover {
+  background: #214f36;
+  color: #237a56;
+}
+
+.sendbtn, .twitter-share-button {
+  border: solid .2rem white;
+  background: white;
+  color: #237a56;
+}
+
+.sendbtn:hover, .twitter-share-button:hover {
+  background: #237a56;
+  color: white;
+}
+
+.generatedTextArticle {
+  width: 53.3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.generatedText {
+  height: 12rem;
+  background-color: #488968;
+  padding: 1rem;
+  font-size: 1.8rem;
+  color: #214f36;
+  margin-bottom: 1rem;
+}
+
+.twitter-share-button {
+  align-self: flex-end;
+  text-decoration: none;
+  text-align: center;
 }
