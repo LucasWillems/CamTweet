@@ -1,203 +1,137 @@
-const path = require(`path`);
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const webpack = require(`webpack`);
-const {HotModuleReplacementPlugin} = webpack;
-const {UglifyJsPlugin} = webpack.optimize;
+const ImageminPlugin = require('imagemin-webpack-plugin').default
+const imageminJpegRecompress = require('imagemin-jpeg-recompress');
 
-const CopyWebpackPlugin = require(`copy-webpack-plugin`);
-const ExtractTextWebpackPlugin = require(`extract-text-webpack-plugin`);
-const configHtmls = require(`webpack-config-htmls`)();
+const CriticalPlugin = require('webpack-plugin-critical').CriticalPlugin;
 
-const {getIfUtils, removeEmpty} = require(`webpack-config-utils`);
-const {ifProduction, ifDevelopment} = getIfUtils(process.env.NODE_ENV);
-const fs = require(`fs`);
+const merge = require("webpack-merge");
+const parts = require("./webpack.parts");
 
+const port = 3000;
 
-const extractCSS = new ExtractTextWebpackPlugin(`css/style.css`);
-
-// change for production build on different server path
-const publicPath = `/`;
-
-const port = 8888;
-
-const copy = new CopyWebpackPlugin([{
-  from: `./src/assets`,
-  to: `assets`
-}], {
-  ignore: [
-    `.DS_Store`
-  ]
-});
-
-const frontend = {
-  entry: removeEmpty([
-    `./src/css/style.css`,
-    `./src/js/script.js`,
-    ifDevelopment(...configHtmls.entry)
-  ]),
-
-  output: {
-    path: path.join(__dirname, `dist`),
-    filename: `js/[name].[hash].js`,
-    publicPath
-  }
+const PATHS = {
+  src: path.join(__dirname, "src"),
+  dist: path.join(__dirname, "dist")
 };
 
-const nodeModules = {};
-fs.readdirSync(`node_modules`)
-  .filter(function(x) {
-    return [`.bin`].indexOf(x) === - 1;
-  })
-  .forEach(function(mod) {
-    nodeModules[mod] = `commonjs ${  mod}`;
-  });
-
-
-const config = {
-
-  resolve: {
-    extensions: [
-      `.js`,
-      `.jsx`,
-      `.css`
-    ]
-  },
-
-  devtool: `source-map`,
-
-  devServer: {
-
-    contentBase: `./src`,
-    historyApiFallback: true, // react-router
-    hot: true,
-
-    overlay: {
-      errors: true,
-      warnings: true
+const commonConfig = merge([
+  {
+    entry: [path.join(PATHS.src, "css/style.css"), path.join(PATHS.src, "js/script.js")],
+    output: {
+      path: PATHS.dist,
+      filename: `js/script.[hash].js`
     },
-
-    port
-
-  },
-
-  module: {
-
-    rules: removeEmpty([
-
-      ifDevelopment({
-        test: /\.css$/,
-        use: [
-          `style-loader`,
-          {
-            loader: `css-loader`,
-            options: {
-              importLoaders: 1
-            }
-          },
-          {
-            loader: `postcss-loader`
+    module: {
+      rules: [
+        {
+          test: /\.html$/,
+          loader: `html-loader`,
+          options: {
+            attrs: [
+              `img:src`,
+              `audio:src`,
+              `video:src`,
+              `source:srcset`
+            ]
           }
+        },
+        {
+          test: /\.(jpe?g|png|gif|webp|svg|mp4)$/,
+          use:[
+            {
+              loader: `file-loader`,
+              options: {
+                limit: 1000,
+                context: `./src`,
+                name: `[path][name].[ext]`
+              }
+            },{
+              loader: `image-webpack-loader`,
+              options: {
+                bypassOnDebug: true,
+                mozjpeg: {
+                  progressive: true,
+                  quality: 65
+                },
+                // optipng.enabled: false will disable optipng
+                optipng: {
+                  enabled: false,
+                },
+                pngquant: {
+                  quality: '65-90',
+                  speed: 4
+                },
+                gifsicle: {
+                  interlaced: false,
+                },
+                svgo:{
+              plugins: [
+                {
+                  removeViewBox: false
+                },
+                {
+                  removeEmptyAttrs: false
+                }
+            ]
+          },
+                webp: {
+                  quality: 75
+              },
+              },
+            },
+          ]
+        },
+        {
+          test: /\.(jsx?)$/,
+          exclude: /node_modules/,
+          loader: `babel-loader`
+        }
+      ]
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: "./src/index.html"
+      })
+    ]
+  }
+]);
+
+const productionConfig = merge([
+  parts.extractCSS(),
+  {
+    plugins: [
+      new ImageminPlugin({
+        test: /\.(jpe?g)$/i ,
+        plugins: [
+          imageminJpegRecompress({})
         ]
       }),
-
-      ifProduction({
-        test: /\.css$/,
-        loader: extractCSS.extract([
-          {
-            loader: `css-loader`,
-            options: {
-              importLoaders: 1
-            }
-          },
-          {
-            loader: `postcss-loader`
-          }
-        ])
-      }),
-
-      {
-        test: /\.html$/,
-        loader: `html-loader`,
-        options: {
-          attrs: [
-            `audio:src`,
-            `img:src`,
-            `video:src`,
-            `source:srcset`
-          ] // read src from video, img & audio tag
-        }
-      },
-
-      {
-        test: /\.(jsx?)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: `babel-loader`
-          },
-          {
-            loader: `eslint-loader`,
-            options: {
-              fix: true
-            }
-          }
-        ]
-      },
-
-      {
-        test: /\.(svg|png|jpe?g|gif|webp)$/,
-        loader: `url-loader`,
-        options: {
-          limit: 1000, // inline if < 1 kb
-          context: `./src`,
-          name: `[path][name].[ext]`
-        }
-      },
-
-      {
-        test: /\.(mp3|mp4|wav)$/,
-        loader: `file-loader`,
-        options: {
-          context: `./src`,
-          name: `[path][name].[ext]`
-        }
-      },
-
-      ifProduction({
-        test: /\.(svg|png|jpe?g|gif)$/,
-        loader: `image-webpack-loader`,
-        enforce: `pre`,
-        options: {
-          bypassOnDebug: true
-        }
+      new CriticalPlugin({
+        src: 'index.html',
+        inline: true,
+        minify: true,
+        dest: 'index.html'
       })
+    ]
+  }
+]);
 
-    ])
-
+const developmentConfig = merge([
+  {
+    devServer: {
+      overlay: true,
+      contentBase: PATHS.src
+    }
   },
+  parts.loadCSS(),
+]);
 
-  plugins: removeEmpty([
-
-    ...configHtmls.plugins,
-
-    ifDevelopment(new HotModuleReplacementPlugin()),
-
-
-
-    ifProduction(copy),
-    ifProduction(extractCSS),
-
-    ifProduction(
-      new UglifyJsPlugin({
-        sourceMap: true,
-        comments: false
-      })
-    )
-
-  ])
-
+module.exports = env => {
+  if (process.env.NODE_ENV === "production") {
+    console.log("building production");
+    return merge(commonConfig, productionConfig);
+  }
+  return merge(commonConfig, developmentConfig);
 };
-
-module.exports = [
-  Object.assign({}, config, frontend)
-];

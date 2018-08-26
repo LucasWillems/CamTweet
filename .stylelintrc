@@ -1,4 +1,3 @@
 {
-  "ignoreFiles": "./dist/**/*.css",
-  "extends": "stylelint-config-devine"
+  extends: "stylelint-config-devine"
 }

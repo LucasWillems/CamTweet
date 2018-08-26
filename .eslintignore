@@ -1,1 +1,4 @@
-/dist/*
+dist/
+webpack.config.js
+postcss.config.js
+webpack.parts.js
